@@ -1,0 +1,6 @@
+testAdicionarUmaInformacaoAdicionalDoUsuario,login,password,tipo,contato,mensagemEsperada
+                                            ,julio0001,123456,Phone,+5511998765432,Your contact has been added!
+                                            ,julio0001,123456,Phone,+5511998765433,Your contact has been added!
+                                            ,julio0001,123456,Phone,+5511998765434,Your contact has been added!
+                                            ,julio0001,123456,E-mail,teste@mailinator.com,Your contact has been added!
+                                            ,julio0001,123456,E-mail,teste2@mailinator.com,Your contact has been added!
