@@ -2,11 +2,15 @@ package tests;
 
 import static org.junit.Assert.*;
 
+import org.easetech.easytest.annotation.DataLoader;
+import org.easetech.easytest.annotation.Param;
+import org.easetech.easytest.runner.DataDrivenTestRunner;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -17,10 +21,13 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import suporte.Generator;
 import suporte.Screenshot;
+import suporte.Web;
 
 import java.awt.event.InputEvent;
 import java.util.concurrent.TimeUnit;
 
+@RunWith(DataDrivenTestRunner.class)
+@DataLoader(filePaths = "InformacoesUsuarioTest.csv")
 public class InformacoesUsuarioTest {
     private WebDriver navegador;
 
@@ -29,13 +36,7 @@ public class InformacoesUsuarioTest {
 
     @Before
     public void setUp() {
-        // Abrindo o navegador
-        System.setProperty("webdriver.chrome.driver", "/Users/pedromenegatti1/drivers/chromedriver");
-        navegador = new ChromeDriver();
-        navegador.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-
-        // Navegando para a página do Taskit:
-        navegador.get("http://www.juliodelima.com.br/taskit");
+        navegador = Web.createChrome();
 
         // Clicar no link que possui o texte "Sing in"
         navegador.findElement(By.linkText("Sign in")).click();
@@ -59,8 +60,8 @@ public class InformacoesUsuarioTest {
         navegador.findElement(By.linkText("MORE DATA ABOUT YOU")).click();
     }
 
-    //@Test
-    public void testAdicionarUmaInformacaoAdicionalDoUsuario() {
+    @Test
+    public void testAdicionarUmaInformacaoAdicionalDoUsuario(@Param(name="tipo")String tipo, @Param(name="contato")String contato, @Param(name="mensagem")String mensagemEsperada) {
         // Clicar no botão através do seu xpath //button[@data-target="addmoredata"]
         navegador.findElement(By.xpath("//button[@data-target=\"addmoredata\"]")).click();
 
@@ -69,10 +70,10 @@ public class InformacoesUsuarioTest {
 
         // Na combo de name "type" escolher a opção "Phone"
         WebElement campoType = popupAddMoreData.findElement(By.name("type"));
-        new Select(campoType).selectByVisibleText("Phone");
+        new Select(campoType).selectByVisibleText(tipo);
 
-        // No campo de name "contact" digitar "+5511999999999"
-        popupAddMoreData.findElement(By.name("contact")).sendKeys("+5511999999999");
+        // No campo de name "contact" digitar "+5511998765432"
+        popupAddMoreData.findElement(By.name("contact")).sendKeys(contato);
 
         // Clicar no link de text "SAVE" que está na popup
         popupAddMoreData.findElement(By.linkText("SAVE")).click();
@@ -80,7 +81,7 @@ public class InformacoesUsuarioTest {
         // Na mensagem de id "toast-container" validar que o texto é "Your contact has been added!"
         WebElement mensagemPop = navegador.findElement(By.id("toast-container"));
         String mensagem = mensagemPop.getText();
-        assertEquals("Your contact has been added!", mensagem);
+        assertEquals(mensagemEsperada, mensagem);
 
 
     }
@@ -113,6 +114,6 @@ public class InformacoesUsuarioTest {
     @After
     public void tearDown() {
         // Fechar o navegador
-        // navegador.quit();
+        navegador.quit();
     }
 }
